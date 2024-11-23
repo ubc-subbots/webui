@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Web UI</title>
+</head>
+<body>
+    <h1>Web UI</h1>
+    {% if message %}
+        <p>{{ message }}</p>
+    {% endif %}
+    <form method="post">
+        <button name="action" value="shutdown" type="submit">Shutdown Host</button>
+        <button name="action" value="ip_a" type="submit">Execute 'ip a' on Ubuntu Container</button>
+        <button name="action" value="lsusb" type="submit">Execute 'lsusb' on Host</button>
+    </form>
+    <h2>Command Outputs:</h2>
+    {% if ip_a_output %}
+        <h3>'ip a' Output:</h3>
+        <textarea rows="10" cols="80">{{ ip_a_output }}</textarea>
+    {% endif %}
+    {% if lsusb_output %}
+        <h3>'lsusb' Output:</h3>
+        <textarea rows="10" cols="80">{{ lsusb_output }}</textarea>
+    {% endif %}
+</body>
+</html>
