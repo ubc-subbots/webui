@@ -1,26 +1,184 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Web UI</title>
+    <title>Steelhead WebUI</title>
+    <style>
+        body {
+            margin: 50px;
+            padding: 0;
+            height: 200vh;
+            background-color: #f4f4f4;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .thruster-test {
+            position: relative;
+            width: 30%;
+            height: auto;
+            min-width: 400pt;
+        }
+        .thruster-test img {
+            width: 100%;
+            display: block;
+        }
+        .row {
+            display: flex;
+        }
+
+        .column {
+            margin: 20px;
+            float: left;
+
+        }
+        .left {
+            width: 30%;
+            min-width: 450pt;
+        }
+        .middle {
+            width: 20%;
+            min-width: 200pt;
+        }
+        .right {
+            width: 40%;
+            min-width: 400pt;
+        }
+        .movement-controls-grid-1 {
+            display: grid;
+            gap: 50px 50px;
+            grid-template-columns: auto auto auto;
+        }
+        .movement-controls-grid-2 {
+            display: grid;
+            gap: 50px 50px;
+            grid-template-columns: auto auto auto;
+        }
+        .button {
+            padding: 10px 20px 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: x-large;
+        }
+        #dummy {
+            background-color: #f4f4f4;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .thruster-button {
+            padding: 5px 30px;
+            position: absolute;
+            transform: translate(-50%, 0%);
+        }
+        .button .movement-button {
+            padding: 0px;
+            height: 100%;
+            width: 100%;
+        }
+        #thruster3 { top: 20%; left: 25%; }
+        #thruster2 { top: 20%; left: 75%; }
+        #thruster4 { top: 62%; left: 15%; }
+        #thruster1 { top: 62%; left: 85%; }
+        #thruster5 { top: 80%; left: 50%; }
+        #thruster6 { top: 90%; left: 50%; }
+    </style>
 </head>
 <body>
-    <h1>Web UI</h1>
+    <h1>Steelhead Remote Control Web UI</h1>
     {% if message %}
         <p>{{ message }}</p>
     {% endif %}
-    <form method="post">
-        <button name="action" value="shutdown" type="submit">Shutdown Host</button>
-        <button name="action" value="ip_a" type="submit">Execute 'ip a' on Ubuntu Container</button>
-        <button name="action" value="lsusb" type="submit">Execute 'lsusb' on Host</button>
-    </form>
+    <div class="row">
+        <div class="column left">
+            <div class="thruster-test">
+                <h2>Thrusters Test</h2>
+                <img src="{{url_for('static', filename='steelhead.png')}}">
+                <form method="POST">
+                    <button type="submit" name="action" value="thruster1" id="thruster1" class="button thruster-button">1</button>
+                    <button type="submit" name="action" value="thruster2" id="thruster2" class="button thruster-button">2</button>
+                    <button type="submit" name="action" value="thruster3" id="thruster3" class="button thruster-button">3</button>
+                    <button type="submit" name="action" value="thruster4" id="thruster4" class="button thruster-button">4</button>
+                    <button type="submit" name="action" value="thruster5" id="thruster5" class="button thruster-button">5</button>
+                    <button type="submit" name="action" value="thruster6" id="thruster6" class="button thruster-button">6</button>
+                </form>
+            </div>
+            <h2>!!!!!DANGEROUS ZONE!!!!!!</h2>
+            ==================================
+            <form method="post">
+                <button name="action" value="shutdown" type="submit">Shutdown Robot</button>
+                <button name="action" value="reboot" type="submit">Reboot Robot</button>
+                <button name="action" value="ip_a" type="submit">Get Container Network Info</button>
+                <button name="action" value="lsusb" type="submit">Execute 'lsusb' on Host</button>
+                <button name="action" value="fetch" type="submit">Fetch latest triton repo in Container</button>
+            </form> 
+        </div>
+        <div class="column middle">
+            <h2>Movements</h2>
+            =========================
+            <form method="POST">
+                <div class="movement-controls-grid-1">
+                    <div><button type="submit" name="action" value="dummy" id="dummy" class="button movement-button"> </button></div>
+                    <div><button type="submit" name="action" title="Move Front" value="move-front" id="front" class="button movement-button">↑</button></div>
+                    <div><button type="submit" name="action" value="dummy" id="dummy" class="button movement-button"> </button></div>
+                    <div><button type="submit" name="action" title="Move Left" value="move-left" id="left" class="button movement-button">←</button></div>
+                    <div><button type="submit" name="action" title="Move Back" value="move-back" id="back" class="button movement-button">↓</button></div>               
+                    <div><button type="submit" name="action" title="Move Right" value="move-right" id="right" class="button movement-button">→</button></div>
+                </div>
+                <br><br>
+                <div class="movement-controls-grid-2">
+                    <div><button type="submit" name="action" title="Turn Counter-Clockwise" value="move-ccw" id="ccw" class="button movement-button">⟲</button></div>
+                    <div><button type="submit" name="action" title="Turn Clockwise" value="move-cw" id="cw" class="button movement-button">⟳</button></div>
+                    <div><button type="submit" name="action" title="Move Up" value="move-up" id="up" class="button movement-button">⮙</button></div>
+                    <div><button type="submit" name="action" title="Tilt Left" value="move-tilt-left" id="tilt-left" class="button movement-button">↶</button></div>
+                    <div><button type="submit" name="action" title="Tilt Right" value="move-tilt-right" id="tilt-right" class="button movement-button">↷</button></div>
+                    <div><button type="submit" name="action" title="Move Down" value="move-down" id="down" class="button movement-button">⮛</button></div>
+                </div>
+            </form>
+            <br><br><br><br><br>
+            <h2>Programs</h2>
+            ====================
+            <form method="POST">
+                <button name="action" value="program-go_to_gate" type="submit">Execute Go to Gate Program</button>
+                <!-- <button name="action" value="program2" type="submit">Placeholder 2</button>
+                <button namv2r  e="action" value="program3" type="submit">Placeholder 3</button> -->
+            </form>
+
+        </div>
+        <div class="column right">
+            <h2>Live Camera Feed (Bottom)</h2>
+            =========================
+            {% if image_data_bottom %}
+                <img src="{{ image_data_bottom }}" alt="Captured Image">
+            {% else %}
+                <p>Press button below to fetch image</p>
+            {% endif %}
+            <form method="POST"><button name="action" value="camera-bottom-update" type="submit">Update</button></form>
+
+            <h2>Live Camera Feed (Front)</h2>
+            =========================
+            {% if image_data_front %}
+                <img src="{{ image_data_front }}" alt="Captured Image">
+            {% else %}
+                <p>Press button below to fetch image</p>
+            {% endif %}
+            <form method="POST"><button name="action" value="camera-front-update" type="submit">Update</button></form>
+
+            <h2>Live Sensor Data</h2>
+            ===========================
+            TODO...
+        </div>
+      </div> 
+    
     <h2>Command Outputs:</h2>
-    {% if ip_a_output %}
-        <h3>'ip a' Output:</h3>
-        <textarea rows="10" cols="80">{{ ip_a_output }}</textarea>
+    {% if container_output %}
+        <h3>Container Execution Output:</h3>
+        <textarea rows="10" cols="80">{{ container_output }}</textarea>
     {% endif %}
-    {% if lsusb_output %}
-        <h3>'lsusb' Output:</h3>
-        <textarea rows="10" cols="80">{{ lsusb_output }}</textarea>
+    {% if host_output %}
+        <h3>Host Machine Execution Output:</h3>
+        <textarea rows="10" cols="80">{{ host_output }}</textarea>
     {% endif %}
+    <p>Made by Fei Kuan on OpenSUSE Tumbleweed (btw)</p>
 </body>
 </html>
