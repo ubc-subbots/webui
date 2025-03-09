@@ -1,9 +1,9 @@
-FROM python:3.9-slim
+FROM --platform=linux/arm64/v8 python:3.9-slim
 
 WORKDIR /app
 
 COPY requirements.txt requirements.txt
-RUN apt-get update && apt-get install -y util-linux && \
+RUN apt-get update && apt-get install -y util-linux ffmpeg && \
     pip install -r requirements.txt
 
 # Copy backend files
