@@ -26,6 +26,9 @@ def run_in_container_then_stop(container, start_cmd, stop_cmd, duration):
     sleep(duration)
     container.exec_run(stop_cmd)
 
+# TODO change to interactive shell https://chatgpt.com/share/67cd36b4-1c84-800d-86a6-c04ab10facf7
+# TODO add a button to initialize everything (run container, start launch files etc)
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     message = ''
