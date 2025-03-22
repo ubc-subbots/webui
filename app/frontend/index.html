@@ -23,11 +23,9 @@
         .row {
             display: flex;
         }
-
         .column {
             margin: 20px;
             float: left;
-
         }
         .left {
             width: 30%;
@@ -66,22 +64,8 @@
         .button:hover {
             background-color: #0056b3;
         }
-        .thruster-button {
-            padding: 5px 30px;
-            position: absolute;
-            transform: translate(-50%, 0%);
-        }
-        .button .movement-button {
-            padding: 0px;
-            height: 100%;
-            width: 100%;
-        }
-        #thruster3 { top: 20%; left: 25%; }
-        #thruster2 { top: 20%; left: 75%; }
-        #thruster4 { top: 62%; left: 15%; }
-        #thruster1 { top: 62%; left: 85%; }
-        #thruster5 { top: 80%; left: 50%; }
-        #thruster6 { top: 90%; left: 50%; }
+
+        /* We no longer need the old .thruster-button or #thrusterX absolute positions. */
     </style>
 </head>
 <body>
@@ -93,16 +77,74 @@
         <div class="column left">
             <div class="thruster-test">
                 <h2>Thrusters Test</h2>
-                <img src="{{url_for('static', filename='steelhead.png')}}">
+                <!-- Keep your image (even if it’s empty or just a placeholder) -->
+                <img src="{{ url_for('static', filename='steelhead.png') }}">
+                
+                <!-- New table-based layout for thruster entries -->
                 <form method="POST">
-                    <button type="submit" name="action" value="thruster1" id="thruster1" class="button thruster-button">1</button>
-                    <button type="submit" name="action" value="thruster2" id="thruster2" class="button thruster-button">2</button>
-                    <button type="submit" name="action" value="thruster3" id="thruster3" class="button thruster-button">3</button>
-                    <button type="submit" name="action" value="thruster4" id="thruster4" class="button thruster-button">4</button>
-                    <button type="submit" name="action" value="thruster5" id="thruster5" class="button thruster-button">5</button>
-                    <button type="submit" name="action" value="thruster6" id="thruster6" class="button thruster-button">6</button>
+                    <table>
+                        <!-- Row 1: Thruster 1, Thruster 2 -->
+                        <tr>
+                            <td><label for="thruster1_value">Thruster 1:</label></td>
+                            <td>
+                                <input type="number" name="thruster1_value"
+                                       id="thruster1_value"
+                                       min="-16" max="15" step="1" value="0">
+                            </td>
+                            <td><label for="thruster2_value">Thruster 2:</label></td>
+                            <td>
+                                <input type="number" name="thruster2_value"
+                                       id="thruster2_value"
+                                       min="-16" max="15" step="1" value="0">
+                            </td>
+                        </tr>
+                        <!-- Row 2: Thruster 3, Thruster 4 -->
+                        <tr>
+                            <td><label for="thruster3_value">Thruster 3:</label></td>
+                            <td>
+                                <input type="number" name="thruster3_value"
+                                       id="thruster3_value"
+                                       min="-16" max="15" step="1" value="0">
+                            </td>
+                            <td><label for="thruster4_value">Thruster 4:</label></td>
+                            <td>
+                                <input type="number" name="thruster4_value"
+                                       id="thruster4_value"
+                                       min="-16" max="15" step="1" value="0">
+                            </td>
+                        </tr>
+                        <!-- Row 3: Thruster 5, Thruster 6 -->
+                        <tr>
+                            <td><label for="thruster5_value">Thruster 5:</label></td>
+                            <td>
+                                <input type="number" name="thruster5_value"
+                                       id="thruster5_value"
+                                       min="-16" max="15" step="1" value="0">
+                            </td>
+                            <td><label for="thruster6_value">Thruster 6:</label></td>
+                            <td>
+                                <input type="number" name="thruster6_value"
+                                       id="thruster6_value"
+                                       min="-16" max="15" step="1" value="0">
+                            </td>
+                        </tr>
+                        <!-- Final row: Time (s) and Send button -->
+                        <tr>
+                            <td colspan="2">
+                                <label for="time_seconds">Time (s):</label>
+                                <input type="number" name="time_seconds"
+                                       id="time_seconds" step="0.1" value="0">
+                            </td>
+                            <td colspan="2" style="text-align:right;">
+                                <button type="submit" name="action" value="send" class="button">
+                                    Send
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
                 </form>
             </div>
+
             <h2>!!!!!DANGEROUS ZONE!!!!!!</h2>
             ==================================
             <form method="post">
@@ -113,6 +155,7 @@
                 <button name="action" value="fetch" type="submit">Fetch latest triton repo in Container</button>
             </form> 
         </div>
+
         <div class="column middle">
             <h2>Movements</h2>
             =========================
@@ -122,7 +165,7 @@
                     <div><button type="submit" name="action" title="Move Front" value="move-front" id="front" class="button movement-button">↑</button></div>
                     <div><button type="submit" name="action" value="dummy" id="dummy" class="button movement-button"> </button></div>
                     <div><button type="submit" name="action" title="Move Left" value="move-left" id="left" class="button movement-button">←</button></div>
-                    <div><button type="submit" name="action" title="Move Back" value="move-back" id="back" class="button movement-button">↓</button></div>               
+                    <div><button type="submit" name="action" title="Move Back" value="move-back" id="back" class="button movement-button">↓</button></div>
                     <div><button type="submit" name="action" title="Move Right" value="move-right" id="right" class="button movement-button">→</button></div>
                 </div>
                 <br><br>
@@ -140,11 +183,9 @@
             ====================
             <form method="POST">
                 <button name="action" value="program-go_to_gate" type="submit">Execute Go to Gate Program</button>
-                <!-- <button name="action" value="program2" type="submit">Placeholder 2</button>
-                <button namv2r  e="action" value="program3" type="submit">Placeholder 3</button> -->
             </form>
-
         </div>
+
         <div class="column right">
             <h2>Live Camera Feed (Bottom)</h2>
             =========================
@@ -153,7 +194,9 @@
             {% else %}
                 <p>Press button below to fetch image</p>
             {% endif %}
-            <form method="POST"><button name="action" value="camera-bottom-update" type="submit">Update</button></form>
+            <form method="POST">
+                <button name="action" value="camera-bottom-update" type="submit">Update</button>
+            </form>
 
             <h2>Live Camera Feed (Front)</h2>
             =========================
@@ -162,7 +205,9 @@
             {% else %}
                 <p>Press button below to fetch image</p>
             {% endif %}
-            <form method="POST"><button name="action" value="camera-front-update" type="submit">Update</button></form>
+            <form method="POST">
+                <button name="action" value="camera-front-update" type="submit">Update</button>
+            </form>
 
             <h2>Live Sensor Data</h2>
             ===========================
@@ -170,6 +215,7 @@
         </div>
       </div> 
     
+
     <h2>Command Outputs:</h2>
     {% if container_output %}
         <h3>Container Execution Output:</h3>
@@ -179,6 +225,7 @@
         <h3>Host Machine Execution Output:</h3>
         <textarea rows="10" cols="80">{{ host_output }}</textarea>
     {% endif %}
-    <p>Made by Fei Kuan on OpenSUSE Tumbleweed (btw)</p>
+
+    <p>Made by Fei Kuan and Gyan EZ on OpenSUSE Tumbleweed (btw)</p>
 </body>
 </html>
