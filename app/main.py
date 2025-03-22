@@ -44,94 +44,94 @@ def index():
         # thruster testing
         if "thruster1" in action:
             run_in_container_then_stop(container, 
-                """bash -c 'source /ros_entrypoint.sh && source ~/triton/install/setup.bash && timeout 5s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000010001"'""",
-                """bash -c 'source /ros_entrypoint.sh && source ~/triton/install/setup.bash && timeout 7s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000010000"'""",
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 5s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000010001"'""",
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 7s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000010000"'""",
                 1)
         elif "thruster2" in action:
             run_in_container_then_stop(container, 
-                'ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000110000"',
-                'ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000010000"',
-                2)
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 5s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000010000"'""",
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 7s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000110000"'""",
+                1)
         elif "thruster3" in action:
             run_in_container_then_stop(container, 
-                'ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100011000010000"',
-                'ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000010000"',
-                2)
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 5s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100011000010000"'""",
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 7s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000010000"'""",
+                1)
         elif "thruster4" in action:
             run_in_container_then_stop(container, 
-                'ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010001100001000010000"',
-                'ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000010000"',
-                2)
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 5s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010001100001000010000"'""",
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 7s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000010000"'""",
+                1)
         elif "thruster5" in action:
             run_in_container_then_stop(container, 
-                'ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000110000100001000010000"',
-                'ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000010000"',
-                2)
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 5s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000110000100001000010000"'""",
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 7s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000010000"'""",
+                1)
         elif "thruster6" in action:
             run_in_container_then_stop(container, 
-                'ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100011000010000100001000010000"',
-                'ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000010000"',
-                2)
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 5s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100011000010000100001000010000"'""",
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 7s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000010000"'""",
+                1)
 
 
         # movements
         elif "move-front" in action:
             run_in_container_then_stop(container, 
-                """bash -c 'source /ros_entrypoint.sh && source ~/triton/install/setup.bash && timeout 5s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 15.0, y: 0, z: 0}}"'""",
-                """bash -c 'source /ros_entrypoint.sh && source ~/triton/install/setup.bash && timeout 5s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 0, y: 0, z: 0}}"'""",
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 5s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 15.0, y: 0, z: 0}}"'""",
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 5s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 0, y: 0, z: 0}}"'""",
                 1)
         elif "move-back" in action:
             run_in_container_then_stop(container, 
-                "ros2 topic pub /triton/control/input_forces geometry_msgs/msg/Wrench '{force: {x: -15.0, y: 0, z: 0}}'",
-                "ros2 topic pub /triton/control/input_forces geometry_msgs/msg/Wrench '{force: {x: 0, y: 0, z: 0}}'",
-                2)
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 5s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: -15.0, y: 0, z: 0}}"'""",
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 5s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 0, y: 0, z: 0}}"'""",
+                1)
         elif "move-left" in action:
             run_in_container_then_stop(container, 
-                "ros2 topic pub /triton/control/input_forces geometry_msgs/msg/Wrench '{force: {x: 0, y: 15.0, z: 0}}'",
-                "ros2 topic pub /triton/control/input_forces geometry_msgs/msg/Wrench '{force: {x: 0, y: 0, z: 0}}'",
-                2)
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 5s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 0, y: 15.0, z: 0}}"'""",
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 5s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 0, y: 0, z: 0}}"'""",
+                1)
         elif "move-right" in action:
             run_in_container_then_stop(container, 
-                "ros2 topic pub /triton/control/input_forces geometry_msgs/msg/Wrench '{force: {x: 0, y: -15.0, z: 0}}'",
-                "ros2 topic pub /triton/control/input_forces geometry_msgs/msg/Wrench '{force: {x: 0, y: 0, z: 0}}'",
-                2)
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 5s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 0, y: -15.0, z: 0}}"'""",
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 5s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 0, y: 0, z: 0}}"'""",
+                1)
         elif "move-up" in action:
             run_in_container_then_stop(container, 
-                "ros2 topic pub /triton/control/input_forces geometry_msgs/msg/Wrench '{force: {x: 0, y: 0, z: 15.0}}'",
-                "ros2 topic pub /triton/control/input_forces geometry_msgs/msg/Wrench '{force: {x: 0, y: 0, z: 0}}'",
-                2)
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 5s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 0, y: 0, z: 15.0}}"'""",
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 5s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 0, y: 0, z: 0}}"'""",
+                1)
         elif "move-down" in action:
             run_in_container_then_stop(container, 
-                "ros2 topic pub /triton/control/input_forces geometry_msgs/msg/Wrench '{force: {x: 0, y: 0, z: -15.0}}'",
-                "ros2 topic pub /triton/control/input_forces geometry_msgs/msg/Wrench '{force: {x: 0, y: 0, z: 0}}'",
-                2)
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 5s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 0, y: 0, z: -15.0}}"'""",
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 5s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 0, y: 0, z: 0}}"'""",
+                1)
         elif "move-ccw" in action:
             run_in_container_then_stop(container, 
-                "ros2 topic pub /triton/control/input_forces geometry_msgs/msg/torque '{force: {x: 0, y: 0, z: 15.0}}'",
-                "ros2 topic pub /triton/control/input_forces geometry_msgs/msg/torque '{force: {x: 0, y: 0, z: 0}}'",
-                2)
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 5s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/torque "{force: {x: 0, y: 0, z: 15.0}}"'""",
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 5s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/torque "{force: {x: 0, y: 0, z: 0}}"'""",
+                1)
         elif "move-cw" in action:
             run_in_container_then_stop(container, 
-                "ros2 topic pub /triton/control/input_forces geometry_msgs/msg/torque '{force: {x: 0, y: 0, z: -15.0}}'",
-                "ros2 topic pub /triton/control/input_forces geometry_msgs/msg/torque '{force: {x: 0, y: 0, z: 0}}'",
-                2)
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 5s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/torque "{force: {x: 0, y: 0, z: -15.0}}"'""",
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 5s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/torque "{force: {x: 0, y: 0, z: 0}}"'""",
+                1)
         elif "move-tilt-left" in action:
             run_in_container_then_stop(container, 
-                "ros2 topic pub /triton/control/input_forces geometry_msgs/msg/torque '{force: {x: -15.0, y: 0, z: 0}}'",
-                "ros2 topic pub /triton/control/input_forces geometry_msgs/msg/torque '{force: {x: 0, y: 0, z: 0}}'",
-                2)
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 5s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/torque "{force: {x: -15.0, y: 0, z: 0}}"'""",
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 5s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/torque "{force: {x: 0, y: 0, z: 0}}"'""",
+                1)
         elif "move-tilt-right" in action:
             run_in_container_then_stop(container, 
-                "ros2 topic pub /triton/control/input_forces geometry_msgs/msg/torque '{force: {x: 15.0, y: 0, z: 0}}'",
-                "ros2 topic pub /triton/control/input_forces geometry_msgs/msg/torque '{force: {x: 0, y: 0, z: 0}}'",
-                2)
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 5s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/torque "{force: {x: 15.0, y: 0, z: 0}}"'""",
+                """bash -c 'source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 5s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/torque "{force: {x: 0, y: 0, z: 0}}"'""",
+                1)
 
         # Camera and Sensors
         elif action == 'camera-bottom-update':
             # TODO source commands would output something causing the actual image data to not be picked up
-            bottom_output = container.exec_run('bash -c "source /ros_entrypoint.sh && source ~/triton/install/setup.bash && timeout 15s ros2 topic echo /triton/drivers/bottom_camera/image_raw -f --csv"')
+            bottom_output = container.exec_run('bash -c "source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 15s ros2 topic echo /triton/drivers/bottom_camera/image_raw -f --csv"')
             if len(bottom_output) > 1:
-                raw_camera_bottom_csv = bottom_output.output.decode(encoding="utf-8").split('\n',1)[0]
+                raw_camera_bottom_csv = bottom_output.output.decode(encoding="utf-8").split('\n',1)[5]
                 jpg_raw = decode_to_jpg(raw_camera_bottom_csv)
                 if jpg_raw:
                     image_data_bottom = f"data:image/jpeg;base64,{base64.b64encode(jpg_raw).decode('utf-8')}"
@@ -142,9 +142,9 @@ def index():
                 container_output = "Failed to grab bottom camera image, no data"
 
         elif action == 'camera-front-update':
-            front_output = container.exec_run('bash -c "source /ros_entrypoint.sh && source ~/triton/install/setup.bash && timeout 15s ros2 topic echo /triton/drivers/front_camera/image_raw -f --csv"')
+            front_output = container.exec_run('bash -c "source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 15s ros2 topic echo /triton/drivers/front_camera/image_raw -f --csv"')
             if len(front_output) > 1:
-                raw_camera_front_csv = front_output.output.decode(encoding="utf-8").split('\n',1)[0]
+                raw_camera_front_csv = front_output.output.decode(encoding="utf-8").split('\n',1)[5]
                 jpg_raw = decode_to_jpg(raw_camera_front_csv)
                 if jpg_raw:
                     image_data_front = f"data:image/jpeg;base64,{base64.b64encode(jpg_raw).decode('utf-8')}"
@@ -163,7 +163,7 @@ def index():
             run_on_host(['shutdown', '-r', 'now'])
             message = 'Rebooting the host...'
         elif action == 'ip_a':
-            exec_result = container.exec_run('ifcomfig')
+            exec_result = container.exec_run('ifconfig')
             container_output = exec_result.output.decode('utf-8')
         elif action == 'lsusb':
             result = run_on_host(['lsusb'])
