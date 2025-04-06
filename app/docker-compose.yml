@@ -11,6 +11,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - FLASK_ENV=production
-    platforms:
-      - linux/arm64/v8
+    # platforms:
+    #   - linux/arm64/v8
       # - linux/amd64

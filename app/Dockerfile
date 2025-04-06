@@ -1,5 +1,5 @@
-FROM --platform=linux/arm64/v8 python:3.9-slim
-
+FROM --platform=linux/arm64/v8 python:3.13.2-slim-bookworm
+# FROM python:3.9-slim
 WORKDIR /app
 
 COPY requirements.txt requirements.txt

@@ -22,7 +22,7 @@ container = None
 sock = None
 
 def initial_setup():
-    container = client.containers.get('ubc_subbots')
+    container = client.containers.get('steelhead_thrusters')
     exec_result = container.exec_run(
         cmd="bash --rcfile ~/.bashrc -i",
         tty=True,
@@ -30,7 +30,7 @@ def initial_setup():
         socket=True
     )
 
-    sock = exec_result.output
+    sock = exec_result.output._sock
 
 def run_on_host(cmd):
     nsenter_cmd = ['nsenter', '--target', str(HOST_PID), '--mount', '--uts', '--ipc', '--net', '--pid'] + cmd
@@ -171,9 +171,11 @@ def index():
         # Camera and Sensors
         elif action == 'camera-bottom-update':
             # TODO source commands would output something causing the actual image data to not be picked up
-            bottom_output = container.exec_run('bash -c "source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 14s ros2 topic echo /triton/drivers/bottom_camera/image_raw -f --csv"')
+            run_in_container('timeout 8s ros2 topic echo /triton/drivers/bottom_camera/image_raw -f --csv')
+            sleep(8500)
+            bottom_output = read_output()
             if len(bottom_output) > 1:
-                raw_camera_bottom_csv = bottom_output.output.decode(encoding="utf-8").split('\n',1)[5]
+                raw_camera_bottom_csv = bottom_output.output.decode(encoding="utf-8").split('\n',1)[1]
                 jpg_raw = decode_to_jpg(raw_camera_bottom_csv)
                 if jpg_raw:
                     image_data_bottom = f"data:image/jpeg;base64,{base64.b64encode(jpg_raw).decode('utf-8')}"
@@ -184,9 +186,9 @@ def index():
                 container_output = "Failed to grab bottom camera image, no data"
 
         elif action == 'camera-front-update':
-            front_output = container.exec_run('bash -c "source /ros_entrypoint.sh && source ~/steelhead/install/setup.bash && timeout 14s ros2 topic echo /triton/drivers/front_camera/image_raw -f --csv"')
+            front_output = run_in_container('timeout 8s ros2 topic echo /triton/drivers/front_camera/image_raw -f --csv')
             if len(front_output) > 1:
-                raw_camera_front_csv = front_output.output.decode(encoding="utf-8").split('\n',1)[5]
+                raw_camera_front_csv = front_output.output.decode(encoding="utf-8").split('\n',1)[1]
                 jpg_raw = decode_to_jpg(raw_camera_front_csv)
                 if jpg_raw:
                     image_data_front = f"data:image/jpeg;base64,{base64.b64encode(jpg_raw).decode('utf-8')}"
