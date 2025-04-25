@@ -74,6 +74,15 @@ def read_output(timeout = 1.0):
     
     return output.decode('utf-8', errors='replace')
 
+def thruster_calculator(force):
+    if not -16 <= n <= 15:
+        return '00000'
+
+    sign_bit = '0' if n >= 0 else '1'
+    magnitude = abs(n)
+    magnitude_bits = f"{magnitude:04b}"  # 4 bits for magnitude
+    return sign_bit + magnitude_bits
+
 # changed to interactive shell https://chatgpt.com/share/67cd36b4-1c84-800d-86a6-c04ab10facf7
 # TODO add a button to initialize everything (run container, start launch files etc)
 
@@ -87,97 +96,83 @@ def index():
         action = request.form.get('action')
 
         # thruster testing
-        if "thruster1" in action:
-            exec_output += run_in_container_then_stop(container, 
-                'timeout 4s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000010001"',
-                'timeout 4s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000010000"',
-                1)
-        elif "thruster2" in action:
-            exec_output += run_in_container_then_stop(container, 
-                'timeout 4s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000010000"',
-                'timeout 4s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000110000"',
-                1)
-        elif "thruster3" in action:
-            exec_output += run_in_container_then_stop(container, 
-                'timeout 4s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100011000010000"',
-                'timeout 4s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000010000"',
-                1)
-        elif "thruster4" in action:
-            exec_output += run_in_container_then_stop(container, 
-                'timeout 4s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010001100001000010000"',
-                'timeout 4s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000010000"',
-                1)
-        elif "thruster5" in action:
-            exec_output += run_in_container_then_stop(container, 
-                'timeout 4s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000110000100001000010000"',
-                'timeout 4s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000010000"',
-                1)
-        elif "thruster6" in action:
-            exec_output += run_in_container_then_stop(container, 
-                'timeout 4s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100011000010000100001000010000"',
-                'timeout 4s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000010000"',
-                1)
+        if "test-thrusters" in action:
+            thruster1 = request.form['thruster1_value']
+            thruster2 = request.form['thruster2_value']
+            thruster3 = request.form['thruster3_value']
+            thruster4 = request.form['thruster4_value']
+            thruster5 = request.form['thruster5_value']
+            thruster6 = request.form['thruster6_value']
+            runtime   = request.form['time_seconds'] + 2
+
+            thruster_powers = thruster_calculator(thruster6) + thruster_calculator(thruster5) + thruster_calculator(thruster4) + thruster_calculator(thruster3) + thruster_calculator(thruster2) + thruster_calculator(thruster1)
+
+            thruster_command = 'timeout ' + runtime + 's ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00' + thruster_powers + '"'
+
+            exec_output += run_in_container_then_stop(container, thruster_command, 'timeout 3s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000010000"', runtime, 4)
 
         # movements
         elif "move-front" in action:
             exec_output += run_in_container_then_stop(container, 
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 15.0, y: 0, z: 0}}"',
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 0, y: 0, z: 0}}"',
-                1)
+                4, 4)
         elif "move-back" in action:
             exec_output += run_in_container_then_stop(container, 
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: -15.0, y: 0, z: 0}}"',
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 0, y: 0, z: 0}}"',
-                1)
+                4, 4)
         elif "move-left" in action:
             exec_output += run_in_container_then_stop(container, 
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 0, y: 15.0, z: 0}}"',
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 0, y: 0, z: 0}}"',
-                1)
+                4, 4)
         elif "move-right" in action:
             exec_output += run_in_container_then_stop(container, 
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 0, y: -15.0, z: 0}}"',
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 0, y: 0, z: 0}}"',
-                1)
+                4, 4)
         elif "move-up" in action:
             exec_output += run_in_container_then_stop(container, 
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 0, y: 0, z: 15.0}}"',
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 0, y: 0, z: 0}}"',
-                1)
+                4, 4)
         elif "move-down" in action:
             exec_output += run_in_container_then_stop(container, 
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 0, y: 0, z: -15.0}}"',
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 0, y: 0, z: 0}}"',
-                1)
+                4, 4)
         elif "move-ccw" in action:
             exec_output += run_in_container_then_stop(container, 
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/torque "{force: {x: 0, y: 0, z: 15.0}}"',
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/torque "{force: {x: 0, y: 0, z: 0}}"',
-                1)
+                4, 4)
         elif "move-cw" in action:
             exec_output += run_in_container_then_stop(container, 
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/torque "{force: {x: 0, y: 0, z: -15.0}}"',
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/torque "{force: {x: 0, y: 0, z: 0}}"',
-                1)
+                4, 4)
         elif "move-tilt-left" in action:
             exec_output += run_in_container_then_stop(container, 
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/torque "{force: {x: -15.0, y: 0, z: 0}}"',
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/torque "{force: {x: 0, y: 0, z: 0}}"',
-                1)
+                4, 4)
         elif "move-tilt-right" in action:
             exec_output += run_in_container_then_stop(container, 
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/torque "{force: {x: 15.0, y: 0, z: 0}}"',
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/torque "{force: {x: 0, y: 0, z: 0}}"',
-                1)
+                4, 4)
 
         # Camera and Sensors
         elif action == 'camera-bottom-update':
+            read_output()
             # TODO source commands would output something causing the actual image data to not be picked up
             run_in_container('timeout 8s ros2 topic echo /triton/drivers/bottom_camera/image_raw -f --csv')
             sleep(8500)
             bottom_output = read_output()
-            if len(bottom_output) > 1:
-                raw_camera_bottom_csv = bottom_output.output.decode(encoding="utf-8").split('\n',1)[1]
+            bottom_output.split('\r\n')
+            if len(bottom_output) > 2:
+                raw_camera_bottom_csv = bottom_output[3]
                 jpg_raw = decode_to_jpg(raw_camera_bottom_csv)
                 if jpg_raw:
                     image_data_bottom = f"data:image/jpeg;base64,{base64.b64encode(jpg_raw).decode('utf-8')}"
@@ -188,9 +183,13 @@ def index():
                 exec_output = "Failed to grab bottom camera image, no data"
 
         elif action == 'camera-front-update':
+            read_output()
             front_output = run_in_container('timeout 8s ros2 topic echo /triton/drivers/front_camera/image_raw -f --csv')
-            if len(front_output) > 1:
-                raw_camera_front_csv = front_output.output.decode(encoding="utf-8").split('\n',1)[1]
+            sleep(8500)
+            front_output = read_output()
+            front_output.split('\r\n')
+            if len(front_output) > 2:
+                raw_camera_bottom_csv = front_output[3]
                 jpg_raw = decode_to_jpg(raw_camera_front_csv)
                 if jpg_raw:
                     image_data_front = f"data:image/jpeg;base64,{base64.b64encode(jpg_raw).decode('utf-8')}"
