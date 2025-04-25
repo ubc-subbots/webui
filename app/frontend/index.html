@@ -77,6 +77,7 @@
         <div class="column left">
             <div class="thruster-test">
                 <h2>Thrusters Test</h2>
+                Min: -16; Max: 15
                 <!-- Keep your image (even if it’s empty or just a placeholder) -->
                 <img src="{{ url_for('static', filename='annotated_thruster.png') }}">
                 
@@ -217,15 +218,11 @@
     
 
     <h2>Command Outputs:</h2>
-    {% if container_output %}
-        <h3>Container Execution Output:</h3>
-        <textarea rows="10" cols="80">{{ container_output }}</textarea>
-    {% endif %}
-    {% if host_output %}
-        <h3>Host Machine Execution Output:</h3>
-        <textarea rows="10" cols="80">{{ host_output }}</textarea>
+    {% if exec_output %}
+        <h3>Execution Output:</h3>
+        <textarea rows="10" cols="80">{{ exec_output }}</textarea>
     {% endif %}
 
-    <p>Made by Fei Kuan and Gyan EZ on OpenSUSE Tumbleweed (btw)</p>
+    <p>Made by Fei Kuan and Gyan EZ on Linux (btw)</p>
 </body>
 </html>

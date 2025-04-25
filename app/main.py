@@ -21,6 +21,8 @@ HOST_PID = 1  # Host PID (since we share PID namespace)
 container = None
 sock = None
 
+exec_output = ''
+
 def initial_setup():
     container = client.containers.get('steelhead_thrusters')
     exec_result = container.exec_run(
@@ -40,10 +42,12 @@ def run_on_host(cmd):
 def run_in_container(cmd):
     sock.sendall(command.encode('utf-8') + b'\n')
 
-def run_in_container_then_stop(container, start_cmd, stop_cmd, duration):
+def run_in_container_then_stop(container, start_cmd, stop_cmd, start_timeout, stop_timeout):
     run_in_container(start_cmd)
-    sleep(duration)
+    sleep(start_timeout)
     run_in_container(stop_cmd)
+    sleep(stop_timeout)
+    return read_output()
 
 def read_output(timeout = 1.0):
     start_time = time.time()
@@ -70,14 +74,12 @@ def read_output(timeout = 1.0):
     
     return output.decode('utf-8', errors='replace')
 
-# TODO change to interactive shell https://chatgpt.com/share/67cd36b4-1c84-800d-86a6-c04ab10facf7
+# changed to interactive shell https://chatgpt.com/share/67cd36b4-1c84-800d-86a6-c04ab10facf7
 # TODO add a button to initialize everything (run container, start launch files etc)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     message = ''
-    container_output = ''
-    host_output = ''
     image_data_bottom = None
     image_data_front = None
 
@@ -86,84 +88,84 @@ def index():
 
         # thruster testing
         if "thruster1" in action:
-            run_in_container_then_stop(container, 
+            exec_output += run_in_container_then_stop(container, 
                 'timeout 4s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000010001"',
                 'timeout 4s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000010000"',
                 1)
         elif "thruster2" in action:
-            run_in_container_then_stop(container, 
+            exec_output += run_in_container_then_stop(container, 
                 'timeout 4s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000010000"',
                 'timeout 4s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000110000"',
                 1)
         elif "thruster3" in action:
-            run_in_container_then_stop(container, 
+            exec_output += run_in_container_then_stop(container, 
                 'timeout 4s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100011000010000"',
                 'timeout 4s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000010000"',
                 1)
         elif "thruster4" in action:
-            run_in_container_then_stop(container, 
+            exec_output += run_in_container_then_stop(container, 
                 'timeout 4s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010001100001000010000"',
                 'timeout 4s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000010000"',
                 1)
         elif "thruster5" in action:
-            run_in_container_then_stop(container, 
+            exec_output += run_in_container_then_stop(container, 
                 'timeout 4s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000110000100001000010000"',
                 'timeout 4s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000010000"',
                 1)
         elif "thruster6" in action:
-            run_in_container_then_stop(container, 
+            exec_output += run_in_container_then_stop(container, 
                 'timeout 4s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100011000010000100001000010000"',
                 'timeout 4s ros2 topic pub /motor_control std_msgs/msg/UInt32 "data: 0b00100001000010000100001000010000"',
                 1)
 
         # movements
         elif "move-front" in action:
-            run_in_container_then_stop(container, 
+            exec_output += run_in_container_then_stop(container, 
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 15.0, y: 0, z: 0}}"',
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 0, y: 0, z: 0}}"',
                 1)
         elif "move-back" in action:
-            run_in_container_then_stop(container, 
+            exec_output += run_in_container_then_stop(container, 
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: -15.0, y: 0, z: 0}}"',
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 0, y: 0, z: 0}}"',
                 1)
         elif "move-left" in action:
-            run_in_container_then_stop(container, 
+            exec_output += run_in_container_then_stop(container, 
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 0, y: 15.0, z: 0}}"',
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 0, y: 0, z: 0}}"',
                 1)
         elif "move-right" in action:
-            run_in_container_then_stop(container, 
+            exec_output += run_in_container_then_stop(container, 
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 0, y: -15.0, z: 0}}"',
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 0, y: 0, z: 0}}"',
                 1)
         elif "move-up" in action:
-            run_in_container_then_stop(container, 
+            exec_output += run_in_container_then_stop(container, 
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 0, y: 0, z: 15.0}}"',
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 0, y: 0, z: 0}}"',
                 1)
         elif "move-down" in action:
-            run_in_container_then_stop(container, 
+            exec_output += run_in_container_then_stop(container, 
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 0, y: 0, z: -15.0}}"',
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/Wrench "{force: {x: 0, y: 0, z: 0}}"',
                 1)
         elif "move-ccw" in action:
-            run_in_container_then_stop(container, 
+            exec_output += run_in_container_then_stop(container, 
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/torque "{force: {x: 0, y: 0, z: 15.0}}"',
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/torque "{force: {x: 0, y: 0, z: 0}}"',
                 1)
         elif "move-cw" in action:
-            run_in_container_then_stop(container, 
+            exec_output += run_in_container_then_stop(container, 
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/torque "{force: {x: 0, y: 0, z: -15.0}}"',
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/torque "{force: {x: 0, y: 0, z: 0}}"',
                 1)
         elif "move-tilt-left" in action:
-            run_in_container_then_stop(container, 
+            exec_output += run_in_container_then_stop(container, 
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/torque "{force: {x: -15.0, y: 0, z: 0}}"',
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/torque "{force: {x: 0, y: 0, z: 0}}"',
                 1)
         elif "move-tilt-right" in action:
-            run_in_container_then_stop(container, 
+            exec_output += run_in_container_then_stop(container, 
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/torque "{force: {x: 15.0, y: 0, z: 0}}"',
                 'timeout 4s ros2 topic pub /triton/controls/input_forces geometry_msgs/msg/torque "{force: {x: 0, y: 0, z: 0}}"',
                 1)
@@ -179,11 +181,11 @@ def index():
                 jpg_raw = decode_to_jpg(raw_camera_bottom_csv)
                 if jpg_raw:
                     image_data_bottom = f"data:image/jpeg;base64,{base64.b64encode(jpg_raw).decode('utf-8')}"
-                    container_output = "Bottom Camera Updated Successfully"
+                    exec_output = "Bottom Camera Updated Successfully"
                 else:
-                    container_output = "Failed to grab bottom camera image, no convert output"
+                    exec_output = "Failed to grab bottom camera image, no convert output"
             else:
-                container_output = "Failed to grab bottom camera image, no data"
+                exec_output = "Failed to grab bottom camera image, no data"
 
         elif action == 'camera-front-update':
             front_output = run_in_container('timeout 8s ros2 topic echo /triton/drivers/front_camera/image_raw -f --csv')
@@ -192,11 +194,11 @@ def index():
                 jpg_raw = decode_to_jpg(raw_camera_front_csv)
                 if jpg_raw:
                     image_data_front = f"data:image/jpeg;base64,{base64.b64encode(jpg_raw).decode('utf-8')}"
-                    container_output = "Front Camera Updated Successfully"
+                    exec_output = "Front Camera Updated Successfully"
                 else:
-                    container_output = "Failed to grab front camera image, no convert output"
+                    exec_output = "Failed to grab front camera image, no convert output"
             else:
-                container_output = "Failed to grab front camera image, no data"
+                exec_output = "Failed to grab front camera image, no data"
 
 
         # Dangerous Zone
@@ -208,15 +210,14 @@ def index():
             message = 'Rebooting the host...'
         elif action == 'ip_a':
             exec_result = container.exec_run('ifconfig')
-            container_output = exec_result.output.decode('utf-8')
+            exec_output = exec_result.output.decode('utf-8')
         elif action == 'lsusb':
             result = run_on_host(['lsusb'])
-            host_output = result.stdout.decode('utf-8')
+            exec_output = result.stdout.decode('utf-8')
 
     return render_template('index.html',
                            message=message,
-                           container_output=container_output,
-                           host_output=host_output,
+                           exec_output=exec_output,
                            image_data_bottom=image_data_bottom)
 
 if __name__ == '__main__':
